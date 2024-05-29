@@ -5,8 +5,10 @@ import bodyParser from "body-parser";
 
 const app = express();
 const port = 5000;
-const uri = "mongodb://localhost:27017";
 const client = new MongoClient(uri);
+
+const uri = "mongodb://localhost:27017";
+const dbName = "university";
 
 app.use(cors());
 // create application/json parser
@@ -27,7 +29,7 @@ connectToDatabase();
 
 app.get('/students', async (req, res) => {
   try {
-    const database = client.db('databasename');
+    const database = client.db(dbName);
     const students = database.collection('students');
     const studentsList = await students.find({}).toArray();
     res.json(studentsList);
@@ -51,7 +53,7 @@ app.post('/students', jsonParser, async (req, res) => {
       children: req.body.children ? parseInt(req.body.children) : 0, // Ensure children is an int
       scholarship: req.body.scholarship ? parseInt(req.body.scholarship) : 0 // Ensure scholarship is an int
     };
-    const database = client.db('databasename');
+    const database = client.db(dbName);
     const students = database.collection('students');
     const result = await students.insertOne(newStudent);
     res.json(result);
@@ -80,7 +82,7 @@ app.put('/students/:id', jsonParser, async (req, res) => {
       return res.status(400).send('Invalid gender');
     }
 
-    const database = client.db('databasename');
+    const database = client.db(dbName);
     const students = database.collection('students');
 
     const result = await students.findOneAndUpdate(
@@ -98,7 +100,7 @@ app.put('/students/:id', jsonParser, async (req, res) => {
 app.delete('/students/:id', urlencodedParser, async (req, res) => {
   try {
     const id = req.params.id;
-    const database = client.db('databasename');
+    const database = client.db(dbName);
     const students = database.collection('students');
     const result = await students.deleteOne({ _id: new ObjectId(id) });
     if (result.deletedCount === 1) {
