@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "server": "npx tsx server.ts",
+    "server": "npx tsx server/server.ts",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@babel/types": "^7.24.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.12.12",
     "@vitejs/plugin-vue": "^5.0.4",

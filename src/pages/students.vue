@@ -93,6 +93,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
 import axios from 'axios';
+import {serverApi} from "../../env";
 
 const genders = ['Мужской', 'Женский'];
 
@@ -143,7 +144,7 @@ function delay(ms: number) {
 async function fetchData() {
   loading.value = true;
   await delay(500);
-  axios.get('http://localhost:5000/students')
+  axios.get(serverApi + 'students')
     .then(response => {
       const formattedStudents = response.data.map((student: any) => {
         if (student.birthdate) {
@@ -175,13 +176,13 @@ const saveStudent = async () => {
   newStudent.value.gender = newStudent.value.gender == genders[0] ? 'male' : 'female';
   if (editMode.value) {
     try {
-      await axios.put(`http://localhost:5000/students/${newStudent.value._id}`, newStudent.value);
+      await axios.put(serverApi+ `students/${newStudent.value._id}`, newStudent.value);
     } catch (error) {
       console.error(error);
     }
   } else {
     try {
-      await axios.post('http://localhost:5000/students', newStudent.value);
+      await axios.post(serverApi + 'students', newStudent.value);
     } catch (error) {
       console.error(error);
     }
@@ -214,7 +215,7 @@ const editStudent = (student: any) => {
 
 const deleteStudent = async (id: string) => {
   try {
-    await axios.delete(`http://localhost:5000/students/${id}`);
+    await axios.delete(serverApi + `students/${id}`);
     await fetchData();
   } catch (error) {
     console.error(error);
