@@ -5,10 +5,11 @@ import bodyParser from "body-parser";
 
 const app = express();
 const port = 5000;
-const client = new MongoClient(uri);
 
 const uri = "mongodb://localhost:27017";
 const dbName = "university";
+
+const client = new MongoClient(uri);
 
 app.use(cors());
 // create application/json parser
