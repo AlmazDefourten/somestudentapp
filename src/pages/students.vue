@@ -28,6 +28,9 @@
       :search="search"
       class="elevation-11"
     >
+      <template v-slot:item.birthdate="{ item }">
+        {{ getFormattedDate(item.birthdate) }}
+      </template>
       <template v-slot:item.editControl="props">
         <v-btn class="mx-2" fab dark small color="blue" @click="editStudent(props.item)">
           <v-icon dark>mdi-pencil</v-icon>
@@ -147,14 +150,8 @@ async function fetchData() {
   axios.get(serverApi + 'students')
     .then(response => {
       const formattedStudents = response.data.map((student: any) => {
-        if (student.birthdate) {
-          const date = new Date(student.birthdate);
-          const day = String(date.getDate()).padStart(2, '0');
-          const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы в JavaScript начинаются с 0
-          const year = date.getFullYear();
-          student.birthdate = `${day}.${month}.${year}`;
+          student.birthdate = new Date(student.birthdate);
           student.gender = student.gender == 'male' ? genders[0] : genders[1];
-        }
         return student;
       });
       students.value = formattedStudents;
@@ -163,6 +160,14 @@ async function fetchData() {
     .catch(error => {
       console.error(error);
     });
+}
+
+function getFormattedDate(dateInput: Date): string {
+  const date = new Date(dateInput);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы в JavaScript начинаются с 0
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
 }
 
 const search = ref("");

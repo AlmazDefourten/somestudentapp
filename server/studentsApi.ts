@@ -93,4 +93,50 @@ export function registerStudentsApi(app: Express, client: MongoClient, dbName: s
       res.status(500).send('Error deleting student');
     }
   });
+
+  app.get('/studentsgrades', jsonParser, async (req, res) => {
+    try {
+      console.log(req.query);
+      if (!req.query.ids) {
+        console.error("Query parameter 'ids' is empty");
+        res.status(204).send('Query parameter \'ids\' is empty');
+        return;
+      }
+
+      const ids = req.query.ids;
+      const database = client.db(dbName);
+      const students = database.collection('students');
+      const exams = database.collection('exams');
+
+      // Find students by studentID
+      const studentsList = await students.find({ studentID: { $in: ids } }).toArray();
+
+      // Find exams that include these students and map student grades
+      const examsList = await exams.find({ 'students.studentID': { $in: ids } }).toArray();
+      const studentGrades = examsList.reduce((acc, exam) => {
+        exam.students.forEach(student => {
+          if (ids.includes(student.studentID)) {
+            if (!acc[student.studentID]) {
+              acc[student.studentID] = [];
+            }
+            acc[student.studentID].push({
+              examId: exam._id,
+              grade: student.grade
+            });
+          }
+        });
+        return acc;
+      }, {});
+
+      // Attach grades to each student
+      const result = studentsList.map(student => ({
+        ...student,
+        grades: studentGrades[student.studentID] || []
+      }));
+
+      res.json(result);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
 }
