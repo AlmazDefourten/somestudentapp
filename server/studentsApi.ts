@@ -97,7 +97,7 @@ export function registerStudentsApi(app: Express, client: MongoClient, dbName: s
   app.get('/studentsgrades', jsonParser, async (req, res) => {
     try {
       console.log(req.query);
-      if (!req.query.ids) {
+      if (!req.query.ids && !req.query.examId) {
         console.error("Query parameter 'ids' is empty");
         res.status(204).send('Query parameter \'ids\' is empty');
         return;

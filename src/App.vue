@@ -3,7 +3,7 @@
     <v-app-bar app>
       <v-toolbar-title>
         <v-btn icon="mdi-book-open-page-variant" text to="/"></v-btn>
-        ну типа
+        Кемеровский Государственный Университет
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn text to="/courses">Курсы</v-btn>

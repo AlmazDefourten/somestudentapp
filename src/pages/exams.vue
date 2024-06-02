@@ -117,7 +117,7 @@
                 {{ item.firstName + ' ' + item.lastName }}
               </template>
               <template v-slot:item.editGrade="props">
-                <v-text-field v-model="props.item.grades[0].grade" label="Оценка"></v-text-field>
+                <v-text-field v-model="props.item.grade" label="Оценка"></v-text-field>
               </template>
             </v-data-table>
             <v-btn @click="openAddStudentDialog" color="primary" class="ma-2">
@@ -146,7 +146,7 @@
             <v-select
               v-model="selectedStudent"
               :items="availableStudents"
-              item-text="fullName"
+              item-title="fullName"
               item-value="_id"
               label="Студент"
             ></v-select>
@@ -235,6 +235,7 @@ const fetchAvailableStudents = async () => {
       ...student,
       fullName: `${student.firstName} ${student.lastName}`
     }));
+    console.log(availableStudents);
   } catch (error) {
     console.error(error);
   }
@@ -246,7 +247,7 @@ const addStudent = () => {
   if (student) {
     students.value.push({
       ...student,
-      grades: [{grade: newGrade.value}]
+      grade: newGrade.value
     });
     addStudentDialog.value = false;
     selectedStudent.value = null;
@@ -362,7 +363,7 @@ const saveStudents = async (item) => {
   console.log(item);
   const updatedStudents = students.value.map((student: any) => ({
     studentID: student.studentID,
-    grade: student.grades[0].grade
+    grade: student.grade
   }));
 
   try {
